@@ -41,7 +41,7 @@ CREATE TABLE administrator (
     actived BIT NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     UNIQUE KEY UQ_Admin_Username (username),
-	CONSTRAINT FK_Admin_Role FOREIGN KEY (role_id) REFERENCES admin_role (id)
+	CONSTRAINT FK_Admin_Role FOREIGN KEY (role_id) REFERENCES admin_role (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert administrator (username,fullname,role_id)
@@ -61,7 +61,7 @@ CREATE TABLE admin_password (
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-	CONSTRAINT FK_Password_Admin FOREIGN KEY (admin_id) REFERENCES administrator (id)
+	CONSTRAINT FK_Password_Admin FOREIGN KEY (admin_id) REFERENCES administrator (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert admin_password (admin_id,password)
@@ -108,7 +108,7 @@ CREATE TABLE contact (
   PRIMARY KEY (`id`),
   UNIQUE KEY UQ_Contact_Tel (tel),
   UNIQUE KEY UQ_Contact_Email (email),
-  CONSTRAINT FK_Contact_User FOREIGN KEY (user_id) REFERENCES users(id)
+  CONSTRAINT FK_Contact_User FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert contact (user_id,email)
@@ -123,7 +123,7 @@ CREATE TABLE user_password (
   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  CONSTRAINT FK_Password_User FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT FK_Password_User FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert user_password (user_id,password)
@@ -144,7 +144,7 @@ CREATE TABLE category (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP DEFAULT NULL,
-  active BIT NOT NULL DEFAULT 1,
+  actived BIT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   UNIQUE KEY UQ_Category_Slug (slug)
 );
@@ -171,7 +171,7 @@ CREATE TABLE subcategory (
   actived BIT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   UNIQUE KEY UQ_SubCategory_Slug (slug),
-  CONSTRAINT FK_SubCategory_Category FOREIGN KEY (category_id) REFERENCES category (id)
+  CONSTRAINT FK_SubCategory_Category FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert subcategory (category_id,name,slug)
@@ -192,7 +192,7 @@ CREATE TABLE brand (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP DEFAULT NULL,
-  active BIT NOT NULL DEFAULT 1,
+  actived BIT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   UNIQUE KEY UQ_Brand_Slug (slug)
 );
@@ -231,9 +231,9 @@ CREATE TABLE product (
   brand_id BIGINT NOT NULL,
   discount_id BIGINT DEFAULT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT FK_Product_SubCategory FOREIGN KEY (sub_category_id) REFERENCES subcategory (id),
-  CONSTRAINT FK_Product_Brand FOREIGN KEY (brand_id) REFERENCES brand (id),
-  CONSTRAINT FK_Product_Discount FOREIGN KEY (discount_id) REFERENCES discount (id)
+  CONSTRAINT FK_Product_SubCategory FOREIGN KEY (sub_category_id) REFERENCES subcategory (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FK_Product_Brand FOREIGN KEY (brand_id) REFERENCES brand (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FK_Product_Discount FOREIGN KEY (discount_id) REFERENCES discount (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert product (name,slug,image,price,sub_category_id,brand_id)
@@ -259,7 +259,7 @@ CREATE TABLE inventory (
   quantity BIGINT NOT NULL,
   modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  CONSTRAINT FK_Inventory_Product FOREIGN KEY (product_id) REFERENCES product (id)
+  CONSTRAINT FK_Inventory_Product FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert inventory (product_id,quantity)
@@ -292,7 +292,7 @@ CREATE TABLE orders (
   status INT NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY UQ_Order_OrderCode (order_code),
-  CONSTRAINT FK_Order_User FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT FK_Order_User FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Chi tiết đơn đặt hàng
@@ -302,10 +302,10 @@ CREATE TABLE order_item (
   product_id BIGINT NOT NULL,
   quantity INT NOT NULL,
   price DOUBLE NOT NULL,
-  create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  CONSTRAINT FK_OrderItems_Product FOREIGN KEY (product_id) REFERENCES product (id),
-  CONSTRAINT FK_OrderItems_Order FOREIGN KEY (order_id) REFERENCES orders (id)
+  CONSTRAINT FK_OrderItems_Product FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FK_OrderItems_Order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Thông tin đơn đặt hàng
@@ -333,9 +333,8 @@ CREATE TABLE cart (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  KEY FK_Cart_User (user_id),
-  CONSTRAINT FK_Cart_Product FOREIGN KEY (product_id) REFERENCES product (id),
-  CONSTRAINT FK_Cart_User FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT FK_Cart_Product FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FK_Cart_User FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 --------------------------------------------------------------------------------------------------------------
@@ -345,7 +344,7 @@ CREATE TABLE cart (
 CREATE TABLE verify (
   id BIGINT NOT NULL AUTO_INCREMENT,
   token VARCHAR(255) NOT NULL,
-  active BIT NOT NULL DEFAULT 1,
+  actived BIT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   UNIQUE KEY UQ_Verify_Token (token)
 );
