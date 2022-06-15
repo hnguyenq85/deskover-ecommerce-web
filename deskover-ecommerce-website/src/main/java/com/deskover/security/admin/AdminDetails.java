@@ -1,4 +1,4 @@
-package com.deskover.configuration.security.admin;
+package com.deskover.security.admin;
 
 import com.deskover.entity.Administrator;
 import lombok.AllArgsConstructor;

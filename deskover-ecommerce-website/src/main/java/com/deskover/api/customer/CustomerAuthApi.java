@@ -1,4 +1,4 @@
-package com.deskover.api.admin;
+package com.deskover.api.customer;
 
 import com.deskover.util.JwtUtils;
 import com.deskover.security.payload.request.LoginRequest;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/api/admin/auth")
-public class AdminAuthApi {
+@RequestMapping("/v1/api/customer/auth")
+public class CustomerAuthApi {
     @Autowired
     AuthenticationManager authenticationManager;
 
