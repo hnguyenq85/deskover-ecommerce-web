@@ -29,7 +29,7 @@ public class SubcategoryApi {
 	 * @return List<Subcategory>
 	 */
 	
-	@GetMapping("/subcategories/activated")
+	@GetMapping("/subcategories/actived")
 	public ResponseEntity<?> doGetIsActivated(){
 		List<Subcategory> subcategories = subcategoryService.findByActivated(Boolean.TRUE);
 		if (subcategories.isEmpty()) {
@@ -43,7 +43,7 @@ public class SubcategoryApi {
 	 * @return Subcategory
 	 */
 	
-	@GetMapping("/subcategories/unactivated")
+	@GetMapping("/subcategories/unactived")
 	public ResponseEntity<?> doGetIsUnactivated(){
 		List<Subcategory> subcategories = subcategoryService.findByActivated(Boolean.FALSE);
 		if (subcategories.isEmpty()) {

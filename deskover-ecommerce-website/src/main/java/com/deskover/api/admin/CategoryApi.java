@@ -32,7 +32,7 @@ public class CategoryApi {
 	 * Get categories is activated
 	 * @return List<Category>
 	 */
-	@GetMapping("/categories/activated")
+	@GetMapping("/categories/actived")
 	public ResponseEntity<?> doGetIsActivated(){
 		List<Category> categories = categoryService.findByActivated(Boolean.TRUE);
 		if (categories.isEmpty()) {
@@ -45,7 +45,7 @@ public class CategoryApi {
 	 * Get category is unactivated
 	 * @return Category
 	 */
-	@GetMapping("/categories/unactivated")
+	@GetMapping("/categories/unactived")
 	public ResponseEntity<?> doGetIsUnactivated(){
 		List<Category> categories = categoryService.findByActivated(Boolean.FALSE);
 		if (categories.isEmpty()) {
