@@ -1,8 +1,8 @@
-package com.deskover.security;
+package com.deskover.configuration.security;
 
-import com.deskover.security.admin.AdminDetailsService;
-import com.deskover.security.jwt.AuthEntryPointJwt;
-import com.deskover.security.jwt.AuthAdminTokenFilter;
+import com.deskover.configuration.security.admin.AdminDetailsService;
+import com.deskover.configuration.security.jwt.AuthEntryPointJwt;
+import com.deskover.configuration.security.jwt.AuthAdminTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,10 +73,13 @@ public class SecurityConfiguration {
         protected void configure(final HttpSecurity http) throws Exception {
             http.cors().and().csrf().disable();
 
-            http.antMatcher("/v1/api/admin/**").authorizeRequests()
-                    .antMatchers("/v1/api/admin/auth/login").permitAll()
-                    .antMatchers("/v1/api/admin/**").authenticated();
+            http.authorizeRequests()
+                    .antMatchers("/v1/api/admin/auth/**").permitAll()
+                    .anyRequest().authenticated();
             http.httpBasic();
+            http.exceptionHandling()
+                    .accessDeniedPage("/error/forbidden")
+                    .authenticationEntryPoint(unauthorizedHandler);
             http.logout()
                     .deleteCookies("JSESSIONID")
                     .permitAll();
@@ -104,8 +107,8 @@ public class SecurityConfiguration {
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
             http.authorizeRequests()
-                    .antMatchers("/v1/api/customer/auth/get-profile").authenticated()
-                    .anyRequest().permitAll();
+                    .antMatchers("/v1/api/customer/login").permitAll()
+                    .anyRequest().authenticated();
 
             http.httpBasic();
 

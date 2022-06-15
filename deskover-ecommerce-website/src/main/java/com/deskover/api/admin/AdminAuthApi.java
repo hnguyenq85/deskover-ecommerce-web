@@ -1,8 +1,8 @@
 package com.deskover.api.admin;
 
-import com.deskover.util.JwtUtils;
-import com.deskover.security.payload.request.LoginRequest;
-import com.deskover.security.payload.response.LoginResponse;
+import com.deskover.configuration.security.jwt.JwtUtils;
+import com.deskover.configuration.security.payload.request.LoginRequest;
+import com.deskover.configuration.security.payload.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +38,7 @@ public class AdminAuthApi {
         return ResponseEntity.ok(new LoginResponse(jwtToken));
     }
 
-    @GetMapping("/get-profile")
+    @GetMapping("/profile")
     public ResponseEntity<?> getProfile() {
         return ResponseEntity.ok(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }

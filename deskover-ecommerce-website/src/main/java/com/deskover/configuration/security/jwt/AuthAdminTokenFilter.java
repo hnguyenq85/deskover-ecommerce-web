@@ -1,7 +1,6 @@
-package com.deskover.security.jwt;
+package com.deskover.configuration.security.jwt;
 
-import com.deskover.security.admin.AdminDetailsService;
-import com.deskover.util.JwtUtils;
+import com.deskover.configuration.security.admin.AdminDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.deskover.security.admin;
+package com.deskover.configuration.security.admin;
 
 import com.deskover.entity.Administrator;
 import com.deskover.service.AdminService;

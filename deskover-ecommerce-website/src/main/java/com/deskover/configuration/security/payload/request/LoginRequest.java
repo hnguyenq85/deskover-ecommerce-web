@@ -1,4 +1,4 @@
-package com.deskover.security.payload.request;
+package com.deskover.configuration.security.payload.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deskover.security.payload.response.MessageResponse;
+import com.deskover.configuration.security.payload.response.MessageResponse;
 import com.deskover.entity.Brand;
 
 import com.deskover.service.BrandService;

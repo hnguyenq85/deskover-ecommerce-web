@@ -1,4 +1,4 @@
-package com.deskover.security.jwt;
+package com.deskover.configuration.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

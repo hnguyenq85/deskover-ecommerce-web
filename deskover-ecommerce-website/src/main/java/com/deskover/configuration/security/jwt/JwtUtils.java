@@ -1,6 +1,6 @@
-package com.deskover.util;
+package com.deskover.configuration.security.jwt;
 
-import com.deskover.security.admin.AdminDetails;
+import com.deskover.configuration.security.admin.AdminDetails;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
