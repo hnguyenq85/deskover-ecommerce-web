@@ -1,6 +1,7 @@
-package com.deskover.util;
+package com.deskover.security.jwt;
 
 import com.deskover.security.admin.AdminDetails;
+import com.deskover.security.customer.CustomerDetails;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,18 @@ public class JwtUtils {
     public String generateJwtAdminToken(Authentication authentication) {
 
         AdminDetails userPrincipal = (AdminDetails) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+    public String generateJwtCustomerToken(Authentication authentication) {
+
+        CustomerDetails userPrincipal = (CustomerDetails) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))

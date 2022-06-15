@@ -57,14 +57,13 @@ public class User implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private Set<UserPassword> userPasswords = new LinkedHashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private Set<Order> orders = new LinkedHashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Cart> carts = new LinkedHashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private UserPassword userPasswords;
 
 }

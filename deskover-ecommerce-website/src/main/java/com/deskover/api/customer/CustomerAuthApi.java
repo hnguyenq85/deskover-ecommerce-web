@@ -1,6 +1,6 @@
 package com.deskover.api.customer;
 
-import com.deskover.util.JwtUtils;
+import com.deskover.security.jwt.JwtUtils;
 import com.deskover.security.payload.request.LoginRequest;
 import com.deskover.security.payload.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;

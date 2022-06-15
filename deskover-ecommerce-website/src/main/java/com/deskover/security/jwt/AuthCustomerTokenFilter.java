@@ -1,6 +1,6 @@
 package com.deskover.security.jwt;
 
-import com.deskover.security.admin.AdminDetailsService;
+import com.deskover.security.customer.CustomerDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AuthAdminTokenFilter extends OncePerRequestFilter {
+public class AuthCustomerTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
     @Autowired
-    private AdminDetailsService adminDetailsService;
+    private CustomerDetailsService customerDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthAdminTokenFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthCustomerTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,7 +34,7 @@ public class AuthAdminTokenFilter extends OncePerRequestFilter {
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                UserDetails userDetails = adminDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = customerDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken( userDetails,null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
