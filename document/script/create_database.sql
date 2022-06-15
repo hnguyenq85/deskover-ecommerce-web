@@ -128,8 +128,8 @@ CREATE TABLE user_password (
 );
 
 insert user_password (user_id,password)
-values 	('1','$2a$12$iSxWCDhCdIlnPOvIvaO.7eNqEWTiZu7f/evEL3GYn8QrABKUOxd9i'),
-		('2','$2a$12$iSxWCDhCdIlnPOvIvaO.7eNqEWTiZu7f/evEL3GYn8QrABKUOxd9i')
+values 	('1','12345678'),
+		('2','12345678')
 ;
 
 --------------------------------------------------------------------------------------------------------------
