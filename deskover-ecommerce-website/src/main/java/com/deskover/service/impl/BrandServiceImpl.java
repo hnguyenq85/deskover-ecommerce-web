@@ -1,7 +1,9 @@
 package com.deskover.service.impl;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -54,10 +56,10 @@ public class BrandServiceImpl implements BrandService {
 		if (repo.existsBySlug(brand.getSlug())) {
 			return null;
 		}
-		brand.setCreatedAt(new Date());
-		brand.setModifiedAt(null);
-		brand.setDeletedAt(null);
-		brand.setActived(Boolean.TRUE);
+//		brand.setCreatedAt(new Date());
+//		brand.setModifiedAt(null);
+//		brand.setDeletedAt(null);
+//		brand.setActived(Boolean.TRUE);
 		return repo.save(brand);
 	}
 
@@ -68,16 +70,16 @@ public class BrandServiceImpl implements BrandService {
 		Brand updateBrand = repo.getById(id);
 		updateBrand.setName(brand.getName());
 		updateBrand.setDescription(brand.getDescription());
-		if (brand.getSlug() != null && repo.getById(id).getSlug() != brand.getSlug()) {
-			if (repo.existsBySlug(brand.getSlug())) {
-				return null;
-			}
-		}
 		updateBrand.setSlug(brand.getSlug());
 		updateBrand.setCreatedAt(brand.getCreatedAt());
 		updateBrand.setModifiedAt(brand.getModifiedAt());
 		updateBrand.setDeletedAt(null);
 		updateBrand.setActived(brand.getActived());
+		if (brand.getSlug() != null && !Objects.equals(repo.getById(id).getSlug(), brand.getSlug())) {
+			if (repo.existsBySlug(brand.getSlug())) {
+				return null;
+			}
+		}
 		return repo.saveAndFlush(updateBrand);
 	}
 
@@ -86,7 +88,7 @@ public class BrandServiceImpl implements BrandService {
 	public void delete(Long id) {
 		// TODO Auto-generated method stub
 		Brand deleteBrand = repo.getById(id);
-		deleteBrand.setDeletedAt(new Date());
+		deleteBrand.setDeletedAt(new Timestamp(System.currentTimeMillis()));
 		deleteBrand.setActived(Boolean.FALSE);
 		repo.saveAndFlush(deleteBrand);
 	}
