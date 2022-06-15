@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,7 +52,6 @@ public class Brand implements Serializable {
     @Column(name = "actived", nullable = false)
     private Boolean actived = false;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "brand")
     private Set<Product> products = new LinkedHashSet<>();
 
