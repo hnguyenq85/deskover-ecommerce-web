@@ -1,99 +1,132 @@
 import {Category} from '@/entites/category';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UrlUtils} from "@/utils/url-utils";
-import {CategoryService} from '@services/category.service';
-import {ADTSettings} from 'angular-datatables/src/models/settings';
-import Swal from 'sweetalert2';
 import {DatePipe} from "@angular/common";
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
+import Swal from 'sweetalert2';
+import {ToastrService} from "ngx-toastr";
+import {environment} from "../../../environments/environment";
+import {RestApiService} from "@services/rest-api.service";
+
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
+  url = environment.globalUrl.categoryApi;
+
   categories: Category[];
   category: Category;
   closeResult: string;
   isEdit: boolean = false;
 
   dtOptions: any = {};
+  dtTrigger: Subject<any> = new Subject();
 
   @ViewChild('categoryModal') categoryModal: any;
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective;
 
   constructor(
     private modalService: NgbModal,
-    private categoryService: CategoryService,
+    private restApiService: RestApiService,
+    private toastr: ToastrService,
   ) {
-    this.category = <Category>{};
   }
 
   ngOnInit() {
+    const self = this;
+
     this.dtOptions = {
       pagingType: 'full_numbers',
-      paging: true,
       language: {
         url: "//cdn.datatables.net/plug-ins/1.12.0/i18n/vi.json"
       },
-      responsive: false,
+      responsive: true,
       serverSide: true,
       processing: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.categoryService.getAll(dataTablesParameters.start / dataTablesParameters.length, dataTablesParameters.length, true).subscribe(data => {
+        this.restApiService.post(this.url + '/datatables', dataTablesParameters).toPromise().then(resp => {
+          self.categories = resp.data;
           callback({
-            recordsTotal: data.totalElements,
-            recordsFiltered: data.totalElements,
-            data: data.content
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: self.categories.filter(category => category.actived)
           });
         });
       },
       columns: [
-        {title: 'Tên', data: 'name'},
-        {title: 'Slug', data: 'slug'},
+        {title: 'Tên danh mục', data: 'name', className: 'align-middle'},
+        {title: 'Slug danh mục', data: 'slug', className: 'align-middle'},
         {
-          title: 'Ngày tạo',
-          data: 'createdAt',
-          className: 'text-center',
+          title: 'Ngày tạo', data: 'createdAt', className: 'align-middle text-left text-md-center',
           render: (data, type, full, meta) => {
             return new DatePipe('en-US').transform(data, 'dd/MM/yyyy');
           }
         },
         {
-          title: 'Ngày sửa',
-          data: 'modifiedAt',
-          className: 'text-center',
+          title: 'Ngày cập nhật', data: 'modifiedAt', className: 'align-middle text-left text-md-center',
           render: (data, type, full, meta) => {
             return new DatePipe('en-US').transform(data, 'dd/MM/yyyy');
           }
         },
-        {
-          title: 'Trạng thái',
-          data: 'actived',
-          className: 'text-center',
-          render: (data, type, full, meta) => {
-            return data ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Không hoạt động</span>';
-          }
-        },
+        // {
+        //   title: 'Trạng thái', data: 'actived', className: 'align-middle text-left text-md-center',
+        //   render: (data, type, full, meta) => {
+        //     return `<span class="badge badge-${data ? 'success' : 'danger'}">${data ? 'Đã kích hoạt' : 'Chưa kích hoạt'}</span>`;
+        //   }
+        // },
         {
           title: 'Tác vụ',
           data: null,
           orderable: false,
           searchable: false,
-          className: 'text-center',
+          className: 'align-middle text-left text-md-center',
           render: (data, type, full, meta) => {
             return `
-                <a href="javascript:void(0)" class="btn btn-sm btn-warning"
-                   data-toggle="tooltip" data-placement="top" title="Sửa"><i
-                  class="fa fa-edit"></i></a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-danger"
-                   data-toggle="tooltip" data-placement="top" title="Xoá"><i
-                  class="fa fa-trash"></i></a>
+                <a href="javascript:void(0)" class="btn btn-edit btn-sm bg-faded-info"
+                   data-id="${data.id}"><i
+                  class="fa fa-pen-square text-info"></i></a>
+                <a href="javascript:void(0)" class="btn btn-delete btn-sm bg-faded-danger"
+                   data-id="${data.id}"><i
+                  class="fa fa-trash text-danger"></i></a>
             `;
           }
         },
       ]
     }
+  }
+
+  ngAfterViewInit() {
+    const self = this;
+
+    this.dtTrigger.next();
+
+    let body = $('body');
+    body.on('click', '.btn-edit', function () {
+      const id = $(this).data('id');
+      self.getCategory(id);
+    });
+    body.on('click', '.btn-delete', function () {
+      const id = $(this).data('id');
+      self.deleteCategory(id);
+    });
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
   }
 
   newCategory() {
@@ -102,22 +135,30 @@ export class CategoryComponent implements OnInit {
     this.openModal(this.categoryModal);
   }
 
-  getCategories(page: number, size: number, isActive: Boolean) {
-    this.categoryService.getAll(page, size, isActive).subscribe(data => {
-      this.categories = data;
+  getCategory(id: number) {
+    this.restApiService.getOne(this.url, id).subscribe(data => {
+      this.category = data;
+      this.isEdit = true;
+      this.openModal(this.categoryModal);
     });
   }
 
-  getCategory(id: number) {
-    // return Object.values(this.categories).find(category => category.id == id);
-  }
-
-  editCategory(id: number) {
-
-  }
-
   saveCategory(category: Category) {
-
+    if (this.isEdit) {
+      this.restApiService.put(this.url, category).subscribe(data => {
+        this.toastr.success('Cập nhật thành công');
+        this.rerender();
+      }, error => {
+        this.toastr.error(error);
+      });
+    } else {
+      this.restApiService.post(this.url, category).subscribe(data => {
+        this.toastr.success('Thêm mới thành công');
+        this.rerender();
+      }, error => {
+        this.toastr.error(error);
+      });
+    }
   }
 
   deleteCategory(id: number) {
@@ -131,8 +172,13 @@ export class CategoryComponent implements OnInit {
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Có',
     }).then((result) => {
-
-    })
+      if (result.value) {
+        this.restApiService.delete(this.url, id).subscribe(data => {
+          this.toastr.success('Xoá danh mục thành công');
+          this.rerender();
+        });
+      }
+    });
   }
 
   // Slugify
@@ -158,5 +204,4 @@ export class CategoryComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-
 }

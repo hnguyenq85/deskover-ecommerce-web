@@ -8,4 +8,8 @@ import com.deskover.entity.Subcategory;
 
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> {
 	List<Subcategory> findByActived(Boolean actived);
+
+	List<Subcategory> findByCategoryId(Long categoryId);
+
+	Boolean existsBySlug(String slug);
 }
