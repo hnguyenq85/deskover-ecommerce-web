@@ -16,6 +16,7 @@ import com.deskover.service.BrandService;
 import javax.validation.Valid;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("v1/api/admin")
 public class BrandApi {
 

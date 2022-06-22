@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface CategoryService {
 	// Check if the slug is already in use by another category
+	Boolean existsBySlug(String slug);
+	
 	Boolean existsBySlug(Category category);
 
 	List<Category> getByActived(Boolean isActive);
@@ -25,5 +27,6 @@ public interface CategoryService {
 
 	Category update(Category category);
 
-	void delete(Long id);
+
+	void changeActived(Long id);
 }
