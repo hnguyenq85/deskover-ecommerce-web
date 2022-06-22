@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.deskover.configuration.security.payload.response.MessageResponse;
+import com.deskover.dto.AdministratorDto;
+import com.deskover.service.AdminService;
+
 @RestController
 @RequestMapping("v1/api/admin/administrator")
 public class AdministratorApi {
