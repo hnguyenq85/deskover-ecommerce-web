@@ -3,20 +3,17 @@ package com.deskover.api.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.deskover.configuration.security.payload.response.MessageResponse;
 import com.deskover.entity.Brand;
 import com.deskover.repository.BrandRepository;
 import com.deskover.service.BrandService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("v1/api/admin")
@@ -31,7 +28,7 @@ public class BrandApi {
 	 * Get All brand
 	 * @return List<Brand>
 	 */
-	@GetMapping("/brand/getall")
+	@GetMapping("/brand/get-all")
 	public ResponseEntity<?> doGetAll() {
 		List<Brand> listBrand = service.getAll();
 		return ResponseEntity.ok(listBrand);
@@ -41,7 +38,7 @@ public class BrandApi {
 	 * Get All brand Actived
 	 * @return List<Brand>
 	 */
-	@GetMapping("/brand/getallbrandactived")
+	@GetMapping("/brand/get-all-brand-actived")
 	public ResponseEntity<?> doGetAllBrandIsActived() {
 		List<Brand> listBrand = service.getAllBrandIsActived();
 		if (listBrand == null) {
@@ -55,9 +52,9 @@ public class BrandApi {
 	 * @param Long id
 	 * @return Brand
 	 */
-	@GetMapping("/brand/{id}")
-	public ResponseEntity<?> doGetById(@PathVariable("id") Long id) {
-		Brand brand = service.get(id);
+	@GetMapping("/brand")
+	public ResponseEntity<?> doGetById(@RequestParam(name = "id") Long id) {
+		Brand brand = service.getById(id);
 		if (brand == null) {
 			return ResponseEntity.ok(new MessageResponse("Không tìm thấy brand có id: " + id));
 		}
@@ -69,21 +66,21 @@ public class BrandApi {
 	 * @param String slug
 	 * @return Brand
 	 */
-	@GetMapping("/brand/{slug}")
-	public ResponseEntity<?> doGetBySlug(@PathVariable("slug") String slug) {
-		Brand brand = service.get(slug);
-		if (brand == null) {
-			return ResponseEntity.ok(new MessageResponse("Không tìm thấy brand có slug: " + slug));
-		}
-		return ResponseEntity.ok(brand);
-	}
+//	@GetMapping("/brand")
+//	public ResponseEntity<?> doGetBySlug(@RequestParam(name = "slug") String slug) {
+//		Brand brand = service.getBySlug(slug);
+//		if (brand == null) {
+//			return ResponseEntity.ok(new MessageResponse("Không tìm thấy brand có slug: " + slug));
+//		}
+//		return ResponseEntity.ok(brand);
+//	}
 
 	/**
 	 * Create brand
 	 * @param Brand brand
 	 * @return Brand
 	 */
-	@PostMapping("/brand/create")
+	@PostMapping("/brand")
 	public ResponseEntity<?> doCreate(@RequestBody Brand brand){
 		try {
 			if(repo.existsBySlug(brand.getSlug())) {
@@ -114,7 +111,7 @@ public class BrandApi {
 	@PutMapping("/brand/update/{id}")
 	public ResponseEntity<?> doUpdate(@PathVariable("id") Long id,@RequestBody Brand brand){
 		try {
-			if (brand.getSlug() != null && service.get(id).getSlug().equals(brand.getSlug())) {
+			if (brand.getSlug() != null && service.getById(id).getSlug().equals(brand.getSlug())) {
 				service.update(id,brand);
 			}else if(brand.getSlug() != null && service.existsBySlug(brand.getSlug())){
 				return ResponseEntity.ok(new MessageResponse("Slug này đã tồn tại"));
@@ -124,5 +121,10 @@ public class BrandApi {
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
+	}
+
+	@PostMapping("/brand/datatables")
+	public ResponseEntity<?> doGetForDatatables(@Valid @RequestBody DataTablesInput input) {
+		return ResponseEntity.ok(service.getAllForDatatables(input));
 	}
 }

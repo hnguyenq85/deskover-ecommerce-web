@@ -1,19 +1,39 @@
 package com.deskover.service.impl;
 
+import com.deskover.dto.AdminAuthorityDto;
+import com.deskover.dto.AdminCreateDto;
+import com.deskover.dto.AdminPasswordDto;
 import com.deskover.dto.AdministratorDto;
+import com.deskover.entity.AdminAuthority;
+import com.deskover.entity.AdminPassword;
 import com.deskover.entity.Administrator;
+import com.deskover.repository.AdminAuthorityReponsitory;
+import com.deskover.repository.AdminPasswordRepository;
 import com.deskover.repository.AdministratorRepository;
+import com.deskover.service.AdminAuthorityService;
+import com.deskover.service.AdminPasswordService;
 import com.deskover.service.AdminService;
 import com.deskover.util.MapperUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.util.Set;
 
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdministratorRepository repo;
+
+    @Autowired
+    private AdminPasswordService adminPasswordService;
+
+    @Autowired
+    private AdminAuthorityService adminAuthorityService;
 
     @Override
     public Administrator getById(Long id) {
@@ -29,5 +49,45 @@ public class AdminServiceImpl implements AdminService {
     public AdministratorDto getPrincipal() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return MapperUtil.map(repo.findByUsername(username), AdministratorDto.class);
+    }
+
+    @Override
+    @Transactional
+    public Administrator create(AdminCreateDto admin) {
+        if (repo.existsAdministratorByUsername(admin.getUsername())) {
+            return null;
+        }
+        String password = admin.getPassword();
+        Administrator entityAdmin = MapperUtil.map(admin, Administrator.class);
+        entityAdmin.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        entityAdmin.setActived(Boolean.TRUE);
+        entityAdmin.setAvatar(null);
+        entityAdmin.setModifiedAt(null);
+        entityAdmin.setModifiedAt(null);
+        entityAdmin.setPassword(null);
+        Administrator adminCreated = repo.save(entityAdmin);
+        AdminPassword createPassword = new AdminPassword();
+        createPassword.setAdmin(adminCreated);
+//        createPassword.setPassword(password);
+        AdminPassword passwordCreated = adminPasswordService.create(createPassword);
+        adminCreated.setPassword(passwordCreated);
+        admin.getListRole().forEach(item -> {
+            AdminAuthority authority = new AdminAuthority();
+            authority.setAdmin(adminCreated);
+            authority.setRole(item);
+            adminAuthorityService.create(authority);
+        });
+        return entityAdmin;
+    }
+
+    @Override
+    @Transactional
+    public AdministratorDto update(AdministratorDto admin) {
+        return null;
+    }
+
+    @Override
+    public Boolean existsUsername(String username) {
+        return repo.existsAdministratorByUsername(username);
     }
 }
