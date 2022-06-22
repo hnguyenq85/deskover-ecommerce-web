@@ -1,17 +1,21 @@
 package com.deskover.service.impl;
 
-import com.deskover.entity.Subcategory;
-import com.deskover.repository.SubcategoryRepository;
-import com.deskover.repository.datatables.SubCategoryRepoForDatatables;
-import com.deskover.service.SubcategoryService;
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.List;
+import com.deskover.entity.Category;
+import com.deskover.entity.Subcategory;
+import com.deskover.repository.SubcategoryRepository;
+import com.deskover.repository.datatables.SubCategoryRepoForDatatables;
+import com.deskover.service.CategoryService;
+import com.deskover.service.ProductService;
+import com.deskover.service.SubcategoryService;
 
 @Service
 public class SubcategoryServiceImpl implements SubcategoryService {
@@ -21,6 +25,12 @@ public class SubcategoryServiceImpl implements SubcategoryService {
 	
 	@Autowired
 	SubCategoryRepoForDatatables repoForDatatables;
+	
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private CategoryService categoryService;
 
 	@Override
 	public List<Subcategory> getByCategory(Long categoryId) {
@@ -81,13 +91,56 @@ public class SubcategoryServiceImpl implements SubcategoryService {
 
 	@Override
 	public Boolean existsBySlug(String slug) {
-		return repo.existsBySlug(slug);
+		Subcategory subcategory = repo.findBySlug(slug);
+		return subcategory!=null;
 	}
 
 	@Override
 	public Subcategory create(Subcategory subcategory) {
 		subcategory.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 		return repo.saveAndFlush(subcategory);
+	}
+
+	@Override
+	public Boolean existsBySlug(Subcategory subcategory) {
+		Subcategory subcategoryExists = repo.findBySlug(subcategory.getSlug());
+		Boolean isExits =(subcategoryExists!=null && !subcategoryExists.getId().equals(subcategory.getId())) || productService.existsBySlug(subcategory.getSlug())
+				|| categoryService.existsBySlug(subcategory.getSlug());
+		System.out.println(isExits);
+
+		return isExits;
+	}
+
+	@Override
+	@Transactional
+	public void deleteAll(List<Subcategory> subcategories) {
+		subcategories.forEach(subcategory -> {
+			repo.delete(subcategory);
+		});
+		
+		
+	}
+
+	@Override
+	public Subcategory changeAvtive(Long id) {
+		Subcategory subcategory = this.getById(id);
+		if (subcategory == null) {
+			throw new IllegalArgumentException("Category not found");
+		}
+		if(subcategory.getCategory().getActived()) {
+			if(subcategory.getActived()) {
+				subcategory.setActived(Boolean.FALSE);
+				subcategory.setDeletedAt(new Timestamp(System.currentTimeMillis()));
+				return subcategory;
+			}else {
+				subcategory.setActived(Boolean.TRUE);
+				subcategory.setDeletedAt(new Timestamp(System.currentTimeMillis()));
+				repo.saveAndFlush(subcategory);
+				return subcategory;
+			}
+		}else {
+			return null;
+		}
 	}
 
 }
