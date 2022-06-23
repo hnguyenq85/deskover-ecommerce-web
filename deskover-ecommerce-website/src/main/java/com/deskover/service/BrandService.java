@@ -15,5 +15,6 @@ public interface BrandService {
 	Brand create(Brand brand);
 	Brand update(Long id,Brand brand);
 	void delete(Long id);
+	void changeActived(Long id);
 	DataTablesOutput<Brand> getAllForDatatables(DataTablesInput input);
 }

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,9 +42,11 @@ public class User implements Serializable {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @Column(name = "modified_at", nullable = false)
-    @CreationTimestamp
+    @Column(name = "modified_at")
     private Timestamp modifiedAt;
+
+    @Column(name = "deleted_at")
+    private Timestamp deletedAt;
 
     @Column(name = "last_login", nullable = false)
     @CreationTimestamp

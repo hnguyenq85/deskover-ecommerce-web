@@ -48,8 +48,7 @@ public class Subcategory implements Serializable {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @Column(name = "modified_at", nullable = false)
-    @CreationTimestamp
+    @Column(name = "modified_at")
     private Timestamp modifiedAt;
 
     @Column(name = "deleted_at")

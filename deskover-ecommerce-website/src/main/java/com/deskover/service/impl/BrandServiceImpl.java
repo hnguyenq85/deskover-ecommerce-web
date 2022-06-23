@@ -5,6 +5,7 @@ import com.deskover.entity.Category;
 import com.deskover.repository.BrandRepository;
 import com.deskover.repository.datatables.BrandRepoForDatatables;
 import com.deskover.service.BrandService;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -24,38 +25,32 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public List<Brand> getAll() {
-        // TODO Auto-generated method stub
         return repo.findAll();
     }
 
     @Override
     public List<Brand> getAllBrandIsActived() {
-        // TODO Auto-generated method stub
         return repo.findByActived(Boolean.TRUE);
     }
 
     @Override
     public Brand getById(Long id) {
-        // TODO Auto-generated method stub
         return repo.findById(id).orElse(null);
     }
 
     @Override
     public Brand getBySlug(String slug) {
-        // TODO Auto-generated method stub
         return repo.findBySlug(slug);
     }
 
     @Override
     public Boolean existsBySlug(String slug) {
-        // TODO Auto-generated method stub
         return repo.existsBySlug(slug);
     }
 
     @Override
     @Transactional
     public Brand create(Brand brand) {
-        // TODO Auto-generated method stub
         if (repo.existsBySlug(brand.getSlug())) {
             return null;
         }
@@ -69,8 +64,10 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public Brand update(Long id, Brand brand) {
-        // TODO Auto-generated method stub
-        Brand updateBrand = repo.getById(id);
+        Brand updateBrand = repo.findById(id).orElse(null);
+        if(updateBrand == null){
+            return null;
+        }
         updateBrand.setName(brand.getName());
         updateBrand.setDescription(brand.getDescription());
         if (brand.getSlug() != null && repo.getById(id).getSlug() != brand.getSlug()) {
@@ -89,11 +86,31 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public void delete(Long id) {
-        // TODO Auto-generated method stub
-        Brand deleteBrand = repo.getById(id);
+        Brand deleteBrand = repo.findById(id).orElse(null);
+        if(deleteBrand == null){
+            throw new IllegalArgumentException("Brand này không tồn tại");
+        }
         deleteBrand.setDeletedAt(new Timestamp((System.currentTimeMillis())));
         deleteBrand.setActived(Boolean.FALSE);
         repo.saveAndFlush(deleteBrand);
+    }
+
+    @Override
+    public void changeActived(Long id) {
+        Brand currentBrand = repo.findById(id).orElse(null);
+        if(currentBrand == null){
+            throw new IllegalArgumentException("Brand này không tồn tại");
+        }
+        if(currentBrand.getActived()){
+            currentBrand.setActived(Boolean.FALSE);
+            currentBrand.setDeletedAt(new Timestamp(System.currentTimeMillis()));
+            currentBrand.setModifiedAt(new Timestamp(System.currentTimeMillis()));
+            repo.saveAndFlush(currentBrand);
+        }else{
+            currentBrand.setActived(Boolean.TRUE);
+            currentBrand.setModifiedAt(new Timestamp(System.currentTimeMillis()));
+            repo.saveAndFlush(currentBrand);
+        }
     }
 
     @Override
