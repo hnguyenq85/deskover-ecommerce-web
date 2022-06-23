@@ -10,5 +10,6 @@ public interface AdminService {
     AdministratorDto getPrincipal();
     Administrator create(AdminCreateDto admin);
     AdministratorDto update(AdministratorDto admin);
+    void delete(Long id);
     Boolean existsUsername(String username);
 }

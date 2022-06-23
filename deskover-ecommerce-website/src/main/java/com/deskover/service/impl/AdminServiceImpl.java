@@ -87,6 +87,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
     public Boolean existsUsername(String username) {
         return repo.existsAdministratorByUsername(username);
     }
