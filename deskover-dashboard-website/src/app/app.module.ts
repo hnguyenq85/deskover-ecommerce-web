@@ -9,11 +9,9 @@ import {LoginComponent} from '@modules/login/login.component';
 import {HeaderComponent} from '@modules/main/header/header.component';
 import {FooterComponent} from '@modules/main/footer/footer.component';
 import {MenuSidebarComponent} from '@modules/main/menu-sidebar/menu-sidebar.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProfileComponent} from '@pages/profile/profile.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DashboardComponent} from '@pages/dashboard/dashboard.component';
-import {ToastrModule} from 'ngx-toastr';
 import {MessagesComponent} from '@modules/main/header/messages/messages.component';
 import {NotificationsComponent} from '@modules/main/header/notifications/notifications.component';
 import {ButtonComponent} from '@components/button/button.component';
@@ -37,7 +35,7 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 import {CategoryComponent} from '@pages/category/category.component';
 import {BrandComponent} from '@pages/brand/brand.component';
 import {DataTablesModule} from 'angular-datatables';
-import {AuthInterceptor} from "@/interceptor/auth-interceptor";
+import {AuthInterceptor} from "@/interceptors/auth-interceptor";
 import {SubcategoryComponent} from '@pages/category/subcategory/subcategory.component';
 import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {PromotionComponent} from '@pages/promotion/promotion.component';
@@ -49,12 +47,11 @@ import {TimepickerModule} from "ngx-bootstrap/timepicker";
 import {CKEditorComponent} from '@components/ckeditor/ckeditor.component';
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {ModalModule} from "ngx-bootstrap/modal";
-import {IConfig, NgxMaskModule} from "ngx-mask";
+import {NgxMaskModule} from "ngx-mask";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 registerLocaleData(localeEn, 'vi-VN');
 defineLocale('vi', viLocale);
-
-export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -87,27 +84,22 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ProductComponent,
     CKEditorComponent,
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    StoreModule.forRoot({auth: authReducer, ui: uiReducer}),
-    HttpClientModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
-      preventDuplicates: true
-    }),
-    DataTablesModule,
-    TooltipModule,
-    BsDatepickerModule,
-    TimepickerModule,
-    CKEditorModule,
-    ModalModule,
-    NgxMaskModule.forRoot(),
-  ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        StoreModule.forRoot({auth: authReducer, ui: uiReducer}),
+        HttpClientModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        DataTablesModule,
+        TooltipModule,
+        BsDatepickerModule,
+        TimepickerModule,
+        CKEditorModule,
+        ModalModule,
+        NgxMaskModule.forRoot()
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
