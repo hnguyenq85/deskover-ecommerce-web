@@ -1,33 +1,34 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Category} from '@/entites/category';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UrlUtils} from "@/utils/url-utils";
 import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
+import {CategoryService} from "@services/category.service";
 import {AlertUtils} from '@/utils/alert-utils';
-import {Brand} from "@/entites/brand";
-import {BrandService} from "@services/brand.service";
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {FormControlDirective} from "@angular/forms";
 
 @Component({
-  selector: 'app-brand',
-  templateUrl: './brand.component.html',
-  styleUrls: ['./brand.component.scss']
+  selector: 'app-category',
+  templateUrl: './category-management.component.html',
+  styleUrls: ['./category-management.component.scss'],
 })
-export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CategoryManagementComponent implements OnInit {
 
-  brands: Brand[];
-  brand: Brand = <Brand>{};
+  categories: Category[];
+  category: Category = <Category>{};
 
   isEdit: boolean = false;
   isActive: boolean = true;
 
   dtOptions: any = {};
+  dtTrigger: Subject<any> = new Subject();
 
-  @ViewChild('brandModal') brandModal: ModalDirective;
-  @ViewChild('brandForm') brandForm: FormControlDirective;
+  @ViewChild('categoryModal') categoryModal: ModalDirective;
+  @ViewChild('categoryForm') categoryForm: FormControlDirective;
   @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective;
 
-  constructor(private brandService: BrandService) {
-  }
+  constructor(private categoryService: CategoryService) {}
 
   ngOnInit() {
     const self = this;
@@ -42,8 +43,8 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
       processing: true,
       stateSave: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.brandService.getByActiveForDatatable(dataTablesParameters, this.isActive).then(resp => {
-          self.brands = resp.data;
+        this.categoryService.getByActiveForDatatable(dataTablesParameters, this.isActive).then(resp => {
+          self.categories = resp.data;
           callback({
             recordsTotal: resp.recordsTotal,
             recordsFiltered: resp.recordsFiltered,
@@ -52,36 +53,14 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       },
       columns: [
-        {data: 'name'},
-        {data: 'slug'},
-        {data: 'description'},
-        {data: 'modifiedAt'},
-        {data: null, orderable: false, searchable: false,},
+        { data: 'name' },
+        { data: 'slug' },
+        { data: 'description' },
+        { data: 'modifiedAt' },
+        { data: null, orderable: false, searchable: false },
       ]
     }
   }
-
-  ngAfterViewInit() {
-    const self = this;
-
-    let body = $('body');
-    body.on('click', '.btn-edit', function () {
-      const id = $(this).data('brand-id');
-      self.getBrand(id);
-    });
-    body.on('click', '.btn-delete', function () {
-      const id = $(this).data('brand-id');
-      self.deleteBrand(id);
-    });
-    body.on('click', '.btn-active', function () {
-      const id = $(this).data('brand-id');
-      self.activeBrand(id);
-    });
-  }
-
-  ngOnDestroy() {
-  }
-
   rerender() {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload(null, false);
@@ -90,28 +69,29 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filter() {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.draw();
+      dtInstance.ajax.reload();
     });
   }
 
-  newBrand() {
-    this.brandForm.control.reset();
+  newCategory() {
+    this.categoryForm.control.reset();
     this.isEdit = false;
-    this.brand = <Brand>{};
-    this.openModal(this.brandModal);
+    this.category = <Category>{};
+    this.openModal(this.categoryModal);
   }
 
-  getBrand(id: number) {
-    this.isEdit = true;
-    this.brandService.getById(id).subscribe(data => {
-      this.brand = data;
-      this.openModal(this.brandModal);
+  getCategory(id: number) {
+    this.categoryService.getById(id).subscribe(data => {
+      this.category = data;
+
+      this.isEdit = true;
+      this.openModal(this.categoryModal);
     });
   }
 
-  saveBrand(brand: Brand) {
+  saveCategory(category: Category) {
     if (this.isEdit) {
-      this.brandService.update(brand).subscribe(data => {
+      this.categoryService.update(category).subscribe(data => {
         AlertUtils.toastSuccess('Cập nhật thành công');
         this.rerender();
         this.closeModal();
@@ -119,7 +99,7 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
         AlertUtils.toastError(error);
       });
     } else {
-      this.brandService.create(brand).subscribe(data => {
+      this.categoryService.create(category).subscribe(data => {
         AlertUtils.toastSuccess('Thêm mới thành công');
         this.rerender();
         this.closeModal();
@@ -129,10 +109,10 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  deleteBrand(id: number) {
+  deleteCategory(id: number) {
     AlertUtils.warning('Xác nhận', 'Các danh mục con liên quan cũng sẽ bị xoá').then((result) => {
       if (result.value) {
-        this.brandService.changeActive(id).subscribe(data => {
+        this.categoryService.changeActive(id).subscribe(data => {
           AlertUtils.toastSuccess('Xoá danh mục thành công');
           this.rerender();
         });
@@ -140,8 +120,8 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  activeBrand(id: number) {
-    this.brandService.changeActive(id).subscribe(data => {
+  activeCategory(id: number) {
+    this.categoryService.changeActive(id).subscribe(data => {
       AlertUtils.toastSuccess('Kích hoạt danh mục thành công');
       this.rerender();
     });
@@ -154,11 +134,11 @@ export class BrandComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Modal
   openModal(content) {
-    this.brandModal.show();
+    this.categoryModal.show();
   }
 
   closeModal() {
-    this.brandModal.hide();
+    this.categoryModal.hide();
   }
 
 }

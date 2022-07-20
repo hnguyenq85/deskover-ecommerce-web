@@ -1,34 +1,33 @@
-import {Category} from '@/entites/category';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UrlUtils} from "@/utils/url-utils";
 import {DataTableDirective} from "angular-datatables";
-import {Subject} from "rxjs";
-import {CategoryService} from "@services/category.service";
 import {AlertUtils} from '@/utils/alert-utils';
+import {Brand} from "@/entites/brand";
+import {BrandService} from "@services/brand.service";
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {FormControlDirective} from "@angular/forms";
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss'],
+  selector: 'app-brand',
+  templateUrl: './brand-management.component.html',
+  styleUrls: ['./brand-management.component.scss']
 })
-export class CategoryComponent implements OnInit {
+export class BrandManagementComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  categories: Category[];
-  category: Category = <Category>{};
+  brands: Brand[];
+  brand: Brand = <Brand>{};
 
   isEdit: boolean = false;
   isActive: boolean = true;
 
   dtOptions: any = {};
-  dtTrigger: Subject<any> = new Subject();
 
-  @ViewChild('categoryModal') categoryModal: ModalDirective;
-  @ViewChild('categoryForm') categoryForm: FormControlDirective;
+  @ViewChild('brandModal') brandModal: ModalDirective;
+  @ViewChild('brandForm') brandForm: FormControlDirective;
   @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective;
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(private brandService: BrandService) {
+  }
 
   ngOnInit() {
     const self = this;
@@ -43,8 +42,8 @@ export class CategoryComponent implements OnInit {
       processing: true,
       stateSave: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.categoryService.getByActiveForDatatable(dataTablesParameters, this.isActive).then(resp => {
-          self.categories = resp.data;
+        this.brandService.getByActiveForDatatable(dataTablesParameters, this.isActive).then(resp => {
+          self.brands = resp.data;
           callback({
             recordsTotal: resp.recordsTotal,
             recordsFiltered: resp.recordsFiltered,
@@ -53,14 +52,36 @@ export class CategoryComponent implements OnInit {
         });
       },
       columns: [
-        { data: 'name' },
-        { data: 'slug' },
-        { data: 'description' },
-        { data: 'modifiedAt' },
-        { data: null, orderable: false, searchable: false },
+        {data: 'name'},
+        {data: 'slug'},
+        {data: 'description'},
+        {data: 'modifiedAt'},
+        {data: null, orderable: false, searchable: false,},
       ]
     }
   }
+
+  ngAfterViewInit() {
+    const self = this;
+
+    let body = $('body');
+    body.on('click', '.btn-edit', function () {
+      const id = $(this).data('brand-id');
+      self.getBrand(id);
+    });
+    body.on('click', '.btn-delete', function () {
+      const id = $(this).data('brand-id');
+      self.deleteBrand(id);
+    });
+    body.on('click', '.btn-active', function () {
+      const id = $(this).data('brand-id');
+      self.activeBrand(id);
+    });
+  }
+
+  ngOnDestroy() {
+  }
+
   rerender() {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload(null, false);
@@ -69,29 +90,28 @@ export class CategoryComponent implements OnInit {
 
   filter() {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.ajax.reload();
+      dtInstance.draw();
     });
   }
 
-  newCategory() {
-    this.categoryForm.control.reset();
+  newBrand() {
+    this.brandForm.control.reset();
     this.isEdit = false;
-    this.category = <Category>{};
-    this.openModal(this.categoryModal);
+    this.brand = <Brand>{};
+    this.openModal(this.brandModal);
   }
 
-  getCategory(id: number) {
-    this.categoryService.getById(id).subscribe(data => {
-      this.category = data;
-
-      this.isEdit = true;
-      this.openModal(this.categoryModal);
+  getBrand(id: number) {
+    this.isEdit = true;
+    this.brandService.getById(id).subscribe(data => {
+      this.brand = data;
+      this.openModal(this.brandModal);
     });
   }
 
-  saveCategory(category: Category) {
+  saveBrand(brand: Brand) {
     if (this.isEdit) {
-      this.categoryService.update(category).subscribe(data => {
+      this.brandService.update(brand).subscribe(data => {
         AlertUtils.toastSuccess('Cập nhật thành công');
         this.rerender();
         this.closeModal();
@@ -99,7 +119,7 @@ export class CategoryComponent implements OnInit {
         AlertUtils.toastError(error);
       });
     } else {
-      this.categoryService.create(category).subscribe(data => {
+      this.brandService.create(brand).subscribe(data => {
         AlertUtils.toastSuccess('Thêm mới thành công');
         this.rerender();
         this.closeModal();
@@ -109,10 +129,10 @@ export class CategoryComponent implements OnInit {
     }
   }
 
-  deleteCategory(id: number) {
+  deleteBrand(id: number) {
     AlertUtils.warning('Xác nhận', 'Các danh mục con liên quan cũng sẽ bị xoá').then((result) => {
       if (result.value) {
-        this.categoryService.changeActive(id).subscribe(data => {
+        this.brandService.changeActive(id).subscribe(data => {
           AlertUtils.toastSuccess('Xoá danh mục thành công');
           this.rerender();
         });
@@ -120,8 +140,8 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-  activeCategory(id: number) {
-    this.categoryService.changeActive(id).subscribe(data => {
+  activeBrand(id: number) {
+    this.brandService.changeActive(id).subscribe(data => {
       AlertUtils.toastSuccess('Kích hoạt danh mục thành công');
       this.rerender();
     });
@@ -134,11 +154,11 @@ export class CategoryComponent implements OnInit {
 
   // Modal
   openModal(content) {
-    this.categoryModal.show();
+    this.brandModal.show();
   }
 
   closeModal() {
-    this.categoryModal.hide();
+    this.brandModal.hide();
   }
 
 }

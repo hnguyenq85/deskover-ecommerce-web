@@ -12,10 +12,10 @@ import {FormControlDirective} from "@angular/forms";
 
 @Component({
   selector: 'app-promotion',
-  templateUrl: './promotion.component.html',
-  styleUrls: ['./promotion.component.scss']
+  templateUrl: './promotion-management.component.html',
+  styleUrls: ['./promotion-management.component.scss']
 })
-export class PromotionComponent implements OnInit, AfterViewInit {
+export class PromotionManagementComponent implements OnInit, AfterViewInit {
   discounts: Discount[];
   discount: Discount = <Discount>{};
   products: Product[];

@@ -13,10 +13,10 @@ import {FormControlDirective} from "@angular/forms";
 
 @Component({
   selector: 'app-subcategory',
-  templateUrl: './subcategory.component.html',
-  styleUrls: ['./subcategory.component.scss'],
+  templateUrl: './subcategory-management.component.html',
+  styleUrls: ['./subcategory-management.component.scss'],
 })
-export class SubcategoryComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SubcategoryManagementComponent implements OnInit, AfterViewInit, OnDestroy {
   subcategories: Subcategory[];
   subcategory: Subcategory = <Subcategory>{};
   subcategoryDto: SubcategoryDto = <SubcategoryDto>{};
