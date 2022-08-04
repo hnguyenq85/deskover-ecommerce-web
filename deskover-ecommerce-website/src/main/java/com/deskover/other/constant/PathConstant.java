@@ -1,20 +1,22 @@
 package com.deskover.other.constant;
 
 public class PathConstant {
-    public static String STATIC = "src/main/resources/static/";
+    public static final String STATIC = "src/main/resources/static/";
     public static String TEMP = "temp/";
-    public static String PRODUCT_IMAGE = "img/shop/products/";
-    public static String CATEGORY_IMAGE = "img/shop/categories/";
-    public static String BRAND_IMAGE = "img/shop/brands/";
-    public static String SUBCATEGORY_IMAGE = "img/shop/subcategories/";
-    public static String IMAGE_QRCODE = "img/qrcode/";
-    public static String IMAGE_USER = "img/user/";
+    public static final String IMAGE_PRODUCT = "img/shop/products/";
+    public static final String IMAGE_CATEGORY = "img/shop/categories/";
+    public static final String IMAGE_BRAND = "img/shop/brands/";
+    public static final String IMAGE_SUBCATEGORY = "img/shop/subcategories/";
+    public static final String IMAGE_QRCODE = "img/qrcode/";
+    public static final String IMAGE_USER = "img/user/";
+    public static final String IMAGE_ADMIN = "img/admin/";
 
-    public static String TEMP_STATIC = PathConstant.STATIC + PathConstant.TEMP;
-    public static String PRODUCT_IMAGE_STATIC = PathConstant.STATIC + PathConstant.PRODUCT_IMAGE;
-    public static String CATEGORY_IMAGE_STATIC = PathConstant.STATIC + PathConstant.CATEGORY_IMAGE;
-    public static String SUBCATEGORY_IMAGE_STATIC = PathConstant.STATIC + PathConstant.SUBCATEGORY_IMAGE;
-    public static String BRAND_IMAGE_STATIC = PathConstant.STATIC + PathConstant.BRAND_IMAGE;
-    public static String QRCODE_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_QRCODE;
+    public static final String FOLDER_TEMP_STATIC = PathConstant.STATIC + PathConstant.TEMP;
+    public static final String PRODUCT_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_PRODUCT;
+    public static final String CATEGORY_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_CATEGORY;
+    public static final String SUBCATEGORY_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_SUBCATEGORY;
+    public static final String BRAND_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_BRAND;
+    public static final String QRCODE_IMAGE_STATIC = PathConstant.STATIC + PathConstant.IMAGE_QRCODE;
+    public static final String IMAGE_ADMIN_STATIC = PathConstant.STATIC + PathConstant.IMAGE_ADMIN;
     
 }

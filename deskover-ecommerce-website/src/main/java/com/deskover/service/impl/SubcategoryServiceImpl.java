@@ -18,7 +18,6 @@ import com.deskover.model.entity.database.repository.SubcategoryRepository;
 import com.deskover.model.entity.database.repository.datatable.SubCategoryRepoForDatatables;
 import com.deskover.other.constant.PathConstant;
 import com.deskover.other.util.FileUtil;
-import com.deskover.other.util.UrlUtil;
 import com.deskover.service.CategoryService;
 import com.deskover.service.ProductService;
 import com.deskover.service.SubcategoryService;
@@ -124,7 +123,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         subcategory.setModifiedAt(new Timestamp(System.currentTimeMillis()));
         subcategory.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String sourcePath = PathConstant.TEMP_STATIC + subcategory.getImg();
+        String sourcePath = PathConstant.FOLDER_TEMP_STATIC + subcategory.getImg();
         if (FileUtils.getFile(sourcePath).exists()) {
             String destPath = PathConstant.SUBCATEGORY_IMAGE_STATIC + subcategory.getSlug();
             File imageFile = FileUtil.copyFile(sourcePath, destPath);
@@ -132,7 +131,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
 //            subcategory.setImgUrl(UrlUtil.getImageUrl(imageFile.getName(), PathConstant.SUBCATEGORY_IMAGE));
         }
 
-        FileUtil.removeFolder(PathConstant.TEMP_STATIC);
+        FileUtil.removeFolder(PathConstant.FOLDER_TEMP_STATIC);
         return repo.save(subcategory);
     }
 

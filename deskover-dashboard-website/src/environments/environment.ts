@@ -12,7 +12,7 @@ export const environment = {
 
     tempFolder: BASE_URL + '/temp',
 
-    userImg: BASE_URL + '/img/admin/avatar',
+    userImg: BASE_URL + '/img/admin',
     customerImg: BASE_URL + '/img/shop/account',
     productImg: BASE_URL + '/img/shop/products',
     brandImg: BASE_URL + '/img/shop/brands',

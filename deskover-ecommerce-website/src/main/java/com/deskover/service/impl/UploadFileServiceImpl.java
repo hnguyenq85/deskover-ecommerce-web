@@ -2,7 +2,6 @@ package com.deskover.service.impl;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -11,7 +10,6 @@ import com.deskover.model.entity.dto.UploadFile;
 import com.deskover.other.constant.PathConstant;
 import com.deskover.other.util.FileUtil;
 import com.deskover.service.UploadFileService;
-import com.deskover.service.UserService;
 
 @Service
 public class UploadFileServiceImpl implements UploadFileService {
@@ -24,7 +22,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public void removeTempFolder() {
-        FileUtil.removeFolder(PathConstant.TEMP_STATIC);
+        FileUtil.removeFolder(PathConstant.FOLDER_TEMP_STATIC);
     }
 
     private UploadFile uploadFile(MultipartFile file, String folderPath) {

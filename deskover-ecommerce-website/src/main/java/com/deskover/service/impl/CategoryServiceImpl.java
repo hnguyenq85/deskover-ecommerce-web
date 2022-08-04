@@ -20,7 +20,6 @@ import com.deskover.model.entity.database.repository.CategoryRepository;
 import com.deskover.model.entity.database.repository.datatable.CategoryRepoForDatatables;
 import com.deskover.other.constant.PathConstant;
 import com.deskover.other.util.FileUtil;
-import com.deskover.other.util.UrlUtil;
 import com.deskover.service.CategoryService;
 import com.deskover.service.ProductService;
 import com.deskover.service.SubcategoryService;
@@ -121,14 +120,14 @@ public class CategoryServiceImpl implements CategoryService {
         category.setModifiedAt(new Timestamp(System.currentTimeMillis()));
         category.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String sourcePath = PathConstant.TEMP_STATIC + category.getImg();
+        String sourcePath = PathConstant.FOLDER_TEMP_STATIC + category.getImg();
         if (FileUtils.getFile(sourcePath).exists()) {
             String destPath = PathConstant.CATEGORY_IMAGE_STATIC + category.getSlug();
             File imageFile = FileUtil.copyFile(sourcePath, destPath);
             category.setImg(imageFile.getName());
 //            category.setImgUrl(UrlUtil.getImageUrl(imageFile.getName(), PathConstant.CATEGORY_IMAGE));
         }
-        FileUtil.removeFolder(PathConstant.TEMP_STATIC);
+        FileUtil.removeFolder(PathConstant.FOLDER_TEMP_STATIC);
 
         return repo.save(category);
     }

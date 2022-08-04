@@ -90,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
         product.setModifiedAt(new Timestamp(System.currentTimeMillis()));
         product.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String sourcePath = (isCopy ? PathConstant.PRODUCT_IMAGE_STATIC : PathConstant.TEMP_STATIC) + product.getImg();
+        String sourcePath = (isCopy ? PathConstant.PRODUCT_IMAGE_STATIC : PathConstant.FOLDER_TEMP_STATIC) + product.getImg();
         if (FileUtils.getFile(sourcePath).exists()) {
             String destPath = PathConstant.PRODUCT_IMAGE_STATIC + product.getSlug();
             File imageFile = FileUtil.copyFile(sourcePath, destPath);
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
                 thumbnail.setModifiedAt(new Timestamp(System.currentTimeMillis()));
                 thumbnail.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
-                String sourcePathThumbnail = (isCopy ? PathConstant.PRODUCT_IMAGE_STATIC : PathConstant.TEMP_STATIC)
+                String sourcePathThumbnail = (isCopy ? PathConstant.PRODUCT_IMAGE_STATIC : PathConstant.FOLDER_TEMP_STATIC)
                         + thumbnail.getThumbnail();
                 if (FileUtils.getFile(sourcePathThumbnail).exists()) {
                     String destPathThumbnail = PathConstant.PRODUCT_IMAGE_STATIC + product.getSlug()
@@ -120,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
         });
 
 
-        FileUtil.removeFolder(PathConstant.TEMP_STATIC);
+        FileUtil.removeFolder(PathConstant.FOLDER_TEMP_STATIC);
         return savedProduct;
     }
 

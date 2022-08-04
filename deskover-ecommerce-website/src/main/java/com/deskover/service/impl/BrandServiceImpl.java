@@ -1,11 +1,13 @@
 package com.deskover.service.impl;
 
-import java.io.File;
-import java.sql.Timestamp;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
+import com.deskover.model.entity.database.Brand;
+import com.deskover.model.entity.database.repository.BrandRepository;
+import com.deskover.model.entity.database.repository.datatable.BrandRepoForDatatables;
+import com.deskover.other.constant.PathConstant;
+import com.deskover.other.util.FileUtil;
+import com.deskover.service.BrandService;
+import com.deskover.service.ProductService;
+import com.deskover.service.SubcategoryService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -13,15 +15,10 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.deskover.model.entity.database.Brand;
-import com.deskover.model.entity.database.repository.BrandRepository;
-import com.deskover.model.entity.database.repository.datatable.BrandRepoForDatatables;
-import com.deskover.other.constant.PathConstant;
-import com.deskover.other.util.FileUtil;
-import com.deskover.other.util.UrlUtil;
-import com.deskover.service.BrandService;
-import com.deskover.service.ProductService;
-import com.deskover.service.SubcategoryService;
+import javax.transaction.Transactional;
+import java.io.File;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -101,14 +98,13 @@ public class BrandServiceImpl implements BrandService {
         brand.setModifiedAt(new Timestamp(System.currentTimeMillis()));
         brand.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String sourcePath = PathConstant.TEMP_STATIC + brand.getImg();
+        String sourcePath = PathConstant.FOLDER_TEMP_STATIC + brand.getImg();
         if (FileUtils.getFile(sourcePath).exists()) {
             String destPath = PathConstant.BRAND_IMAGE_STATIC + brand.getSlug();
             File imageFile = FileUtil.copyFile(sourcePath, destPath);
             brand.setImg(imageFile.getName());
-//            brand.setImgUrl(UrlUtil.getImageUrl(imageFile.getName(), PathConstant.BRAND_IMAGE));
         }
-        FileUtil.removeFolder(PathConstant.TEMP_STATIC);
+        FileUtil.removeFolder(PathConstant.FOLDER_TEMP_STATIC);
 
         return repo.save(brand);
     }

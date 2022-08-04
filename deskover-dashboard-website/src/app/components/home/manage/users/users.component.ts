@@ -108,9 +108,16 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  newUser() {
+    this.userForm.control.reset();
+    this.user = <User>{};
+    this.avatarPreview = 'assets/images/no-image.png';
+    this.openModal();
+  }
+
   editUser(user: User) {
     this.user = user;
-    this.avatarPreview = this.getSrc(this.user.avatar);
+    this.avatarPreview = this.user.avatar ? this.getSrc(this.user.avatar) : 'assets/images/no-image.png';
     this.openModal();
   }
 
