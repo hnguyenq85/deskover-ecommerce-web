@@ -1,0 +1,61 @@
+<app-dropdown class="user-menu">
+  <ng-container dropdown-button>
+    <!--<img
+      [src]="'assets/images/avatar/default-profile.png'"
+      class="user-image img-circle elevation-2"
+      alt="User Image"
+    />-->
+    <div class="d-flex">
+      <div class="image me-2">
+        <img
+          [src]="user?.avatar ? user.avatar : 'assets/images/avatar/default-profile.png'"
+          class="user-image img-circle elevation-2"
+          alt=" "
+        />
+      </div>
+      <div class="info">
+          Xin chào, {{ user?.username }}
+      </div>
+    </div>
+  </ng-container>
+  <ng-container dropdown-menu>
+    <li class="user-header bg-primary">
+      <img
+        [src]="user?.avatar ? user.avatar : 'assets/images/avatar/default-profile.png'"
+        class="img-circle elevation-2"
+        alt=" "
+      />
+
+      <p>
+        <span>{{ user?.fullname }}</span>
+        <small>
+          <span>Ngày đăng ký: &nbsp;</span>
+          <span>{{ user?.modifiedAt | date: 'dd/MM/yyyy' }}</span>
+        </small>
+      </p>
+    </li>
+    <!-- Menu Body -->
+    <!-- <li class="user-body">
+        <div class="row">
+            <div class="col-4 text-center">
+                <a [routerLink]="['/']">Followers</a>
+            </div>
+            <div class="col-4 text-center">
+                <a [routerLink]="['/']">Sales</a>
+            </div>
+            <div class="col-4 text-center">
+                <a [routerLink]="['/']">Friends</a>
+            </div>
+        </div>
+    </li> -->
+    <!-- Menu Footer-->
+    <li class="user-footer">
+      <!-- <a [routerLink]="['/profile']" class="btn btn-default btn-flat">
+          Hồ sơ
+      </a> -->
+      <a (click)="logout()" class="btn btn-default btn-flat float-end w-100"
+      >Đăng xuất</a
+      >
+    </li>
+  </ng-container>
+</app-dropdown>

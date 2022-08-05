@@ -1,0 +1,289 @@
+/* Scrollbar */
+/*::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(104, 105, 119, 0.4);
+  border-radius: 20px;
+}*/
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+@import url('https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.3.0/css/flag-icon.min.css');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
+
+@import 'assets/fonts/fontawesome-pro/css/all.min.css';
+
+@import '~admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css';
+@import '~admin-lte/dist/css/adminlte.min.css';
+@import '~ngx-bootstrap/datepicker/bs-datepicker.css';
+@import '~datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+@import '~datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
+@import "~animate.css/animate.min.css";
+
+@import "variable";
+@import "bootstrap";
+@import "common";
+
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Source Sans Pro', sans-serif;
+  overflow: auto;
+}
+
+.brand-link {
+  text-align: center;
+}
+
+.brand-image {
+  display: none;
+  animation: fadeOut 0.5s ease;
+}
+
+.file-drop-area {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .file-drop-input {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    opacity: 0;
+    outline: none;
+    cursor: pointer;
+    z-index: 2;
+  }
+}
+
+.user-menu > .dropdown-menu > li.user-header > img {
+  min-height: 90px;
+  min-width: 90px;
+}
+
+@media (min-width: 992px) {
+  .sidebar-mini.sidebar-collapse .brand-image {
+    display: block;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-image {
+    display: none;
+  }
+}
+
+[class*=sidebar-light-] .nav-sidebar>.nav-item>.nav-link.active {
+  box-shadow: none;
+}
+
+.nav-sidebar {
+  position: unset;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+
+    .p {
+      white-space: nowrap;
+    }
+  }
+
+}
+
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
+.sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+  background-color: $primary !important;
+  color: #fff;
+}
+
+// Sidebar menu animation
+// Needed for open/close menu animation for menus with child nodes
+.nav .nav-item:not(.menu-open) > .ng-trigger-openClose,
+.nav .nav-item > .ng-trigger-openClose.ng-animating {
+  overflow: hidden;
+  display: block;
+}
+// Override original AdminLTE transform
+.nav-sidebar .menu-is-opening>.nav-link i.right, .nav-sidebar .menu-is-opening>.nav-link svg.right, .nav-sidebar .menu-open>.nav-link i.right, .nav-sidebar .menu-open>.nav-link svg.right {
+  transform: none;
+}
+
+.brand-link.border-bottom-0~.sidebar {
+  height: calc(100% - 8.1rem) !important;
+}
+
+.page-item.active .page-link {
+  background-color: $primary !important;
+  border-color: $primary !important;
+}
+
+.login-page {
+  background-image: url('assets/images/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.user-menu > .nav-link {
+  cursor: pointer;
+}
+
+.user-menu > .nav-link:after {
+  content: none;
+}
+
+.user-menu > .dropdown-menu {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding: 0;
+  width: 280px;
+}
+
+.user-menu > .dropdown-menu,
+.user-menu > .dropdown-menu > .user-body {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.user-menu > .dropdown-menu > li.user-header {
+  height: 175px;
+  padding: 10px;
+  text-align: center;
+}
+
+.user-menu > .dropdown-menu > li.user-header > img {
+  z-index: 5;
+  height: 90px;
+  width: 90px;
+  border: 3px solid;
+  border-color: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-menu > .dropdown-menu > li.user-header > p {
+  z-index: 5;
+  font-size: 17px;
+  margin-top: 10px;
+}
+
+.user-menu > .dropdown-menu > li.user-header > p > small {
+  display: block;
+  font-size: 12px;
+}
+
+.user-menu > .dropdown-menu > .user-body {
+  border-bottom: 1px solid #495057;
+  border-top: 1px solid #dee2e6;
+  padding: 15px;
+}
+
+.user-menu > .dropdown-menu > .user-body::after {
+  display: block;
+  clear: both;
+  content: '';
+}
+
+@media (min-width: 576px) {
+  .user-menu > .dropdown-menu > .user-body a {
+    background: #ffffff !important;
+    color: #495057 !important;
+  }
+}
+
+.user-menu > .dropdown-menu > .user-footer {
+  background-color: #f8f9fa;
+  padding: 10px;
+}
+
+.user-menu > .dropdown-menu > .user-footer::after {
+  display: block;
+  clear: both;
+  content: '';
+}
+
+.user-menu > .dropdown-menu > .user-footer .btn-default {
+  color: #6c757d;
+}
+
+@media (min-width: 576px) {
+  .user-menu > .dropdown-menu > .user-footer .btn-default:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.user-menu .user-image {
+  border-radius: 50%;
+  float: left;
+  height: 2.1rem;
+  margin-right: 10px;
+  margin-top: -2px;
+  width: 2.1rem;
+}
+
+@media (min-width: 576px) {
+  .user-menu .user-image {
+    float: none;
+    line-height: 10px;
+    margin-right: 0.4rem;
+    margin-top: -8px;
+  }
+}
+
+.user-menu .user-image {
+  height: 1.6rem;
+  width: 1.6rem;
+  margin-right: 0;
+  margin-left: -8px;
+}
+
+.content {
+  padding: 0 0.5rem;
+}
+
+/* Modal & CKEditor */
+.modal-fullscreen {
+  max-height: none;
+}
+
+//.modal-body, .ck.ck-editor__main>.ck-editor__editable {
+//  overflow-x: hidden !important;
+//}
+//
+//.ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable),
+//.ck.ck-editor__editable.ck-rounded-corners:not(.ck-editor__nested-editable) {
+//  border: 1px solid #ced4da;
+//  border-radius: 0.375rem;
+//}
+//
+//.ck-rounded-corners .ck.ck-balloon-panel, .ck.ck-balloon-panel.ck-rounded-corners {
+//  z-index: 10055 !important;
+//
+//  &.ck-balloon-panel_with-arrow {
+//    z-index: 10056 !important;
+//  }
+//}
+
+/* Notiflix */
+.notiflix-confirm-buttons>a {
+  text-decoration: none;
+}
+
