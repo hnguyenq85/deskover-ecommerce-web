@@ -46,7 +46,7 @@ export class RestApiService{
         errorMessage = 'Máy chủ không phản hồi!';
       }
       if (error.status === 401) {
-
+        errorMessage = 'Token đã hết hạn!';
       }
     } else {
       errorMessage = `Error Code: ${error.status} - Message: ${error.message}`;
